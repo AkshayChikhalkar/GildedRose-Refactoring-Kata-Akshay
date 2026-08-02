@@ -1,13 +1,14 @@
+using System;
 using System.Collections.Generic;
 
 namespace GildedRoseKata;
 
-public interface IItemUpdater
+internal interface IItemUpdater
 {
     void Update(Item item);
 }
 
-public static class ItemUpdaterFactory
+internal static class ItemUpdaterFactory
 {
     private const string AgedBrie = "Aged Brie";
     private const string BackstagePasses = "Backstage passes to a TAFKAL80ETC concert";
@@ -25,7 +26,6 @@ public static class ItemUpdaterFactory
         [AgedBrie] = AgedBrieUpdaterInstance,
         [BackstagePasses] = BackstagePassUpdaterInstance,
         [Sulfuras] = SulfurasUpdaterInstance,
-        //[Conjured] = ConjuredUpdaterInstance
     };
 
     public static IItemUpdater For(Item item)
@@ -34,12 +34,12 @@ public static class ItemUpdaterFactory
         {
             return updater;
         }
-        
-        if (item.Name?.StartsWith(Conjured) == true)
+
+        if (item.Name?.StartsWith(Conjured, StringComparison.Ordinal) == true)
         {
             return ConjuredUpdaterInstance;
         }
-        
+
         return NormalUpdater;
     }
 }
@@ -67,7 +67,7 @@ internal static class ItemQuality
     }
 }
 
-class NormalItemUpdater : IItemUpdater
+internal sealed class NormalItemUpdater : IItemUpdater
 {
     public void Update(Item item)
     {
@@ -76,13 +76,12 @@ class NormalItemUpdater : IItemUpdater
 
         if (item.SellIn < 0)
         {
-            //  after sell date, quality decreases by 2
             ItemQuality.Decrease(item, amount: 1);
         }
     }
 }
 
-class AgedBrieUpdater : IItemUpdater
+internal sealed class AgedBrieUpdater : IItemUpdater
 {
     public void Update(Item item)
     {
@@ -91,13 +90,12 @@ class AgedBrieUpdater : IItemUpdater
 
         if (item.SellIn < 0)
         {
-            // after sell date, the quality increases by 2
             ItemQuality.Increase(item);
         }
     }
 }
 
-class BackstagePassUpdater : IItemUpdater
+internal sealed class BackstagePassUpdater : IItemUpdater
 {
     public void Update(Item item)
     {
@@ -105,37 +103,41 @@ class BackstagePassUpdater : IItemUpdater
 
         if (item.SellIn < 11)
         {
-            ItemQuality.Increase(item); // increases by 2
+            ItemQuality.Increase(item);
         }
 
         if (item.SellIn < 6)
         {
-            ItemQuality.Increase(item); // increases by 3
+            ItemQuality.Increase(item);
         }
 
         item.SellIn--;
 
         if (item.SellIn < 0)
         {
-            item.Quality = ItemQuality.Min; // quality = 0
+            item.Quality = ItemQuality.Min;
         }
     }
 }
 
-class SulfurasUpdater : IItemUpdater
+internal sealed class SulfurasUpdater : IItemUpdater
 {
-    public void Update(Item item){}// no change}
+    public void Update(Item item)
+    {
+        // Legendary items do not change.
+    }
 }
 
-
-class ConjuredUpdater : IItemUpdater{
+internal sealed class ConjuredUpdater : IItemUpdater
+{
     public void Update(Item item)
     {
         ItemQuality.Decrease(item, amount: 2);
         item.SellIn--;
+
         if (item.SellIn < 0)
         {
-            ItemQuality.Decrease(item, amount: 2);// after sell date, quality decreases by 4
-        } 
+            ItemQuality.Decrease(item, amount: 2);
+        }
     }
 }

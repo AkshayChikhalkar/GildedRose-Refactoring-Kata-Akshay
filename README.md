@@ -1,28 +1,34 @@
-# Gilded Rose starting position in C# xUnit
+# Gilded Rose Refactoring Kata
+
+My C# / xUnit solution. I locked in the existing behaviour with tests,
+then pulled the nested `UpdateQuality` logic into per-item updater
+classes. Conjured items are included too.
 
 ## Requirements
+
 - .NET 8 SDK
-The projects target `net8.0` instead of the original .NET 10 default, because .NET 8 is what’s installed on my machine.
 
-## Build the project
+## Build / test / run
 
-Use your normal build tools to build the projects in Debug mode.
-For example, you can use the `dotnet` command line tool:
-
-``` cmd
-dotnet build GildedRose.sln -c Debug
-```
-
-## Run the Gilded Rose Command-Line program
-
-For e.g. 10 days:
-
-``` cmd
-GildedRose/bin/Debug/net8.0/GildedRose 10
-```
-
-## Run all the unit tests
-
-``` cmd
+```bash
+dotnet build
 dotnet test
+dotnet run --project GildedRose -- 10
 ```
+
+## Design
+
+`GildedRose` picks an updater via `ItemUpdaterFactory` (normal, Aged
+Brie, backstage, Sulfuras, Conjured). Shared 0–50 / floor-at-0 quality
+rules live in `ItemQuality`.
+
+Names starting with `Conjured` (case-sensitive) degrade twice as fast:
+−2 before sell-by, −4 after.
+
+## Assumptions
+
+- Left `Item` and the items collection as-is
+- Quality stays in 0–50 for non-legendary items during updates
+- Sulfuras never changes
+- `"Conjured"` prefix match is case-sensitive
+- Invalid starting quality (e.g. 70) isn't clamped on entry — limits apply on update only
