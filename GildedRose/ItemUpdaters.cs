@@ -12,17 +12,20 @@ public static class ItemUpdaterFactory
     private const string AgedBrie = "Aged Brie";
     private const string BackstagePasses = "Backstage passes to a TAFKAL80ETC concert";
     private const string Sulfuras = "Sulfuras, Hand of Ragnaros";
+    private const string Conjured = "Conjured";
 
     private static readonly IItemUpdater NormalUpdater = new NormalItemUpdater();
     private static readonly IItemUpdater AgedBrieUpdaterInstance = new AgedBrieUpdater();
     private static readonly IItemUpdater BackstagePassUpdaterInstance = new BackstagePassUpdater();
     private static readonly IItemUpdater SulfurasUpdaterInstance = new SulfurasUpdater();
+    private static readonly IItemUpdater ConjuredUpdaterInstance = new ConjuredUpdater();
 
     private static readonly Dictionary<string, IItemUpdater> UpdatersByName = new()
     {
         [AgedBrie] = AgedBrieUpdaterInstance,
         [BackstagePasses] = BackstagePassUpdaterInstance,
-        [Sulfuras] = SulfurasUpdaterInstance
+        [Sulfuras] = SulfurasUpdaterInstance,
+        //[Conjured] = ConjuredUpdaterInstance
     };
 
     public static IItemUpdater For(Item item)
@@ -31,7 +34,12 @@ public static class ItemUpdaterFactory
         {
             return updater;
         }
-
+        
+        if (item.Name?.StartsWith(Conjured) == true)
+        {
+            return ConjuredUpdaterInstance;
+        }
+        
         return NormalUpdater;
     }
 }
@@ -117,4 +125,17 @@ class BackstagePassUpdater : IItemUpdater
 class SulfurasUpdater : IItemUpdater
 {
     public void Update(Item item){}// no change}
+}
+
+
+class ConjuredUpdater : IItemUpdater{
+    public void Update(Item item)
+    {
+        ItemQuality.Decrease(item, amount: 2);
+        item.SellIn--;
+        if (item.SellIn < 0)
+        {
+            ItemQuality.Decrease(item, amount: 2);// after sell date, quality decreases by 4
+        } 
+    }
 }

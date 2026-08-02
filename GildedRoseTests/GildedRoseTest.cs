@@ -142,5 +142,37 @@ public class GildedRoseTest
         Assert.Equal(-1, items[0].SellIn);
         Assert.Equal(0, items[0].Quality);
     }
+
+
+    //Test 12
+    [Fact]
+    public void Conjured_DegradesByTwo_BeforeSellDate(){
+        var items = new List<Item>{new Item{Name = "Conjured", SellIn = 10, Quality = 20}};
+        var app = new GildedRose(items);
+        app.UpdateQuality();
+        Assert.Equal(9, items[0].SellIn);
+        Assert.Equal(18, items[0].Quality);
+    }
     
+    //Test 13
+    [Fact]
+    public void Conjured_DegradesByFour_AfterSellDate(){
+        var items = new List<Item>{new Item{Name = "Conjured", SellIn = 0, Quality = 20}};
+        var app = new GildedRose(items);
+        app.UpdateQuality();
+        Assert.Equal(-1, items[0].SellIn);
+        Assert.Equal(16, items[0].Quality);
+    }
+
+    //Test 14
+    [Fact]
+    public void Conjured_StartsWithConjured(){
+        var items = new List<Item>{new Item{Name = "Conjured Test Item", SellIn = 5, Quality = 0}};
+        var app = new GildedRose(items);
+        app.UpdateQuality();
+        Assert.Equal(4, items[0].SellIn);
+        Assert.Equal(0, items[0].Quality);
+    }
+
+
 }
