@@ -1,5 +1,9 @@
 # Gilded Rose starting position in C# xUnit
 
+## Requirements
+- .NET 8 SDK
+The projects target `net8.0` instead of the original .NET 10 default, because .NET 8 is what’s installed on my machine.
+
 ## Build the project
 
 Use your normal build tools to build the projects in Debug mode.

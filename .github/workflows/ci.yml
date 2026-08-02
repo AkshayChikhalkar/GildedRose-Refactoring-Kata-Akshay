@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches: [refactor]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore
+        run: dotnet restore GildedRose.sln
+
+      - name: Build
+        run: dotnet build GildedRose.sln --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test GildedRose.sln --configuration Release --no-build

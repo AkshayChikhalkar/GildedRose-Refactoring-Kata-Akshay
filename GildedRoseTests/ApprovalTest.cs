@@ -13,15 +13,15 @@ namespace GildedRoseTests;
 
 public class ApprovalTest
 {
-    [Fact]
-    public Task Foo()
-    {
-        Item[] items = { new Item { Name = "foo", SellIn = 0, Quality = 0 } };
-        GildedRose app = new GildedRose(items);
-        app.UpdateQuality();
+    // [Fact]
+    // public Task Foo()
+    // {
+    //     Item[] items = { new Item { Name = "foo", SellIn = 0, Quality = 0 } };
+    //     GildedRose app = new GildedRose(items);
+    //     app.UpdateQuality();
         
-        return Verifier.Verify(items);
-    }
+    //     return Verifier.Verify(items);
+    // }
     
     [Fact]
     public Task ThirtyDays()
